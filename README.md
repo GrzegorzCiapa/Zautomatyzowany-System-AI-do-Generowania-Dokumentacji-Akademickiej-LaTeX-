@@ -27,7 +27,9 @@ Bezstanowa integracja dysku chmurowego z API Gemini,zabezpieczona przed przekroc
 * **Izolacja Kontekstu (Stateless API):** Użycie czystych żądań `HTTP POST` gwarantuje, że za każdym razem LLM uruchamia się z czystą pamięcią. Eliminuje to ryzyko halucynacji i mieszania się kontekstów między różnymi wykładami.
 * **Parsowanie JSON i Ekstrakcja:** Moduł chmurowy automatycznie wyciąga czysty, wygenerowany kod `.tex` ze struktury JSON (pomijając standardowy format Markdown LLMów) i nadpisuje gotowy plik na dysku produkcyjnym.
 
-## Struktura Repozytorium
-* `Notatki do latex.blueprint.json` - Wyeksportowany schemat architektury rurociągu (do bezpośredniego importu w Make.com).
-* `docs/` - Przykładowe dane wejściowe (zdigitalizowane odręczne notatki `.pdf`, surowa transkrypcja `.txt`).
-* `outputs/` - Wygenerowany kod `.tex` gotowy do kompilacji w środowiskach typu Overleaf / MiKTeX.
+##  Struktura Repozytorium
+* `Notatki do latex.blueprint.json` - Wyeksportowany schemat architektury rurociągu (do bezpośredniego importu w środowisku Make.com).
+* `PWR_Kryptografia_W1_input.pdf` - Przykładowe dane wejściowe: skan prezentacji z przedmiotu Kryptografia (Inżynieria Kwantowa) stanowiący wizualną bazę wzorów dla modelu.
+* `PWR_Kryptografia_W1_input.txt` - Przykładowe dane wejściowe: surowa transkrypcja audio z tego samego wykładu, wygenerowana sprzętowo przez lokalny model Whisper Large-v3.
+* `PWR_Kryptografia_W1_output.tex` - Wynikowy, zintegrowany przez chmurę kod LaTeX gotowy do bezpośredniej kompilacji.
+* `PWR_Kryptografia_W1_opracowane.pdf` - Skompilowany dokument końcowy udowadniający poprawną składnię wygenerowanego kodu (poprawne renderowanie ułamków, notacji Diraca i układu równań).
