@@ -33,3 +33,6 @@ Bezstanowa integracja dysku chmurowego z API Gemini,zabezpieczona przed przekroc
 * `PWR_Kryptografia_W1_input.txt` - Przykładowe dane wejściowe: surowa transkrypcja audio z tego samego wykładu, wygenerowana sprzętowo przez lokalny model Whisper Large-v3.
 * `PWR_Kryptografia_W1_output.tex` - Wynikowy, zintegrowany przez chmurę kod LaTeX gotowy do bezpośredniej kompilacji.
 * `PWR_Kryptografia_W1_opracowane.pdf` - Skompilowany dokument końcowy udowadniający poprawną składnię wygenerowanego kodu (poprawne renderowanie ułamków, notacji Diraca i układu równań).
+<img width="3829" height="1955" alt="image" src="https://github.com/user-attachments/assets/8823dc21-4f72-410a-be15-3bf21d74440e" />
+<img width="496" height="453" alt="image" src="https://github.com/user-attachments/assets/9b7c549d-8d27-4397-bdeb-d079f0e36f19" />
+<img width="2311" height="922" alt="image" src="https://github.com/user-attachments/assets/092d65d8-ed48-4856-89a5-3bc71b13759c" />
