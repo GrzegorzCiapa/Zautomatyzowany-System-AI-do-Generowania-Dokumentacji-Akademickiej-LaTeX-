@@ -28,6 +28,6 @@ Bezstanowa integracja dysku chmurowego z API Gemini,zabezpieczona przed przekroc
 * **Parsowanie JSON i Ekstrakcja:** Moduł chmurowy automatycznie wyciąga czysty, wygenerowany kod `.tex` ze struktury JSON (pomijając standardowy format Markdown LLMów) i nadpisuje gotowy plik na dysku produkcyjnym.
 
 ## Struktura Repozytorium
-* `blueprint_make.json` - Wyeksportowany schemat architektury rurociągu (do bezpośredniego importu w Make.com).
+* `Notatki do latex.blueprint.json` - Wyeksportowany schemat architektury rurociągu (do bezpośredniego importu w Make.com).
 * `docs/` - Przykładowe dane wejściowe (zdigitalizowane odręczne notatki `.pdf`, surowa transkrypcja `.txt`).
 * `outputs/` - Wygenerowany kod `.tex` gotowy do kompilacji w środowiskach typu Overleaf / MiKTeX.
