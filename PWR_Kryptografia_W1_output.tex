@@ -1,0 +1,140 @@
+toBinary(\documentclass{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage{amsmath, amssymb, graphicx, geometry}
+\usepackage{physics}
+\usepackage{braket}
+
+\geometry{a4paper, margin=2cm}
+
+\title{Notatki z Wykładu: Inżynieria Kwantowa i Bezpieczeństwo Informacji}
+\author{Ekspert Akademicki}
+\date{13 marca 2026}
+
+\begin{document}
+
+\maketitle
+
+\section{Wprowadzenie: Kryptografia Symetryczna vs Asymetryczna}
+
+Tradycyjna kryptografia symetryczna napotyka problem dystrybucji klucza na okręgu (w sieciach rozproszonych). Wymaga ona zaufanych węzłów pośredniczących, co w dzisiejszym Internecie jest trudne do zagwarantowania. Informacja w takim modelu jest czytelna dla każdego węzła.
+Kryptografia asymetryczna (RSA, Diffie-Hellman) pozwoliła na komunikację przez węzły niezaufane, jednak jej bezpieczeństwo opiera się na złożoności obliczeniowej, którą mogą złamać komputery kwantowe.
+
+Miejsce kryptografii kwantowej (QKD - \textit{Quantum Key Distribution}) znajduje się w dwóch obszarach:
+\begin{enumerate}
+    \item Generacja losowości (kwantowe generatory liczb losowych - QRNG).
+    \item Bezpieczna dystrybucja kluczy lub bezpośrednia komunikacja kwantowa.
+\end{enumerate}
+
+\section{One-Time Pad (OTP) - Szyfr z kluczem jednorazowym}
+
+Szyfr z kluczem jednorazowym jest fundamentem, na którym opiera się sens stosowania QKD. Aby system ten oferował pełne bezpieczeństwo, muszą zostać spełnione trzy warunki:
+\begin{enumerate}
+    \item Klucz musi być całkowicie \textbf{losowy}.
+    \item Klucz może być wykorzystany \textbf{tylko raz} (problem utylizacji klucza).
+    \item Długość klucza (binarnego) musi być \textbf{co najmniej równa długości} szyfrowanej wiadomości.
+\end{enumerate}
+
+\subsection{Bezwarunkowe bezpieczeństwo}
+System jest bezwarunkowo bezpieczny, jeżeli prawdopodobieństwo jego skompromitowania \textbf{nie zależy od zasobów}, jakimi dysponuje adwersarz (Ewa). Nie ma znaczenia, czy Ewa posiada farmy serwerów, czy komputer kwantowy – prawdopodobieństwo odgadnięcia wiadomości pozostaje takie samo jak odgadnięcia klucza.
+
+\subsection{Operacja XOR ($\oplus$)}
+Szyfrowanie i deszyfrowanie w OTP opiera się na bramce logicznej XOR (\textit{exclusive OR}). Jest to bramka stratna i jednokierunkowa w sensie informacyjnym (tracimy informację o bitach wejściowych, znając tylko wynik).
+
+\textbf{Tabela prawdy XOR:}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+A & B & $A \oplus B$ \\ \hline
+0 & 0 & 0 \\ \hline
+0 & 1 & 1 \\ \hline
+1 & 0 & 1 \\ \hline
+1 & 1 & 0 \\ \hline
+\end{tabular}
+\end{center}
+
+\textbf{Własności algebraiczne:}
+\begin{itemize}
+    \item $A \oplus B = B \oplus A$
+    \item $A \oplus 0 = A$
+    \item $A \oplus 1 = \neg A$
+    \item $A \oplus A = 0$
+    \item $(A \oplus B) \oplus A = B$ (podstawa deszyfrowania)
+\end{itemize}
+
+\subsection{Przykład szyfrowania (zgodnie z PDF)}
+Załóżmy wiadomość $M$ oraz klucz $K$:
+\begin{itemize}
+    \item[] $M = 1\,0\,0\,1\,1\,1\,0\,1\,0\,1\,1\,0\,1$
+    \item[] $K = 1\,0\,0\,0\,0\,1\,1\,1\,1\,0\,1\,0\,1\,0$ (Klucz)
+\end{itemize}
+Szyfrogram $S = M \oplus K$:
+\begin{itemize}
+    \item[] $S = 0\,0\,0\,1\,1\,0\,1\,0\,0\,0\,1\,1\,1$
+\end{itemize}
+Odbiorca (Bob) wykonuje $S \oplus K = M$, aby odzyskać wiadomość.
+
+\section{Ataki i znaczenie uwierzytelnienia}
+
+\subsection{Atak Brute-force}
+Ewa przejmując szyfrogram $S$ o długości $n$ bitów, może wygenerować $2^n$ możliwych wiadomości. Nawet jeśli dysponuje ogromną mocą obliczeniową, otrzyma wszystkie możliwe kombinacje bitów. Bez znajomości klucza nie jest w stanie stwierdzić, która z sensownych wiadomości jest tą właściwą.
+
+\subsection{Atak w scenariuszu bankowym (Problem braku uwierzytelnienia)}
+Jeśli system nie posiada warstwy uwierzytelnienia, adwersarz może dokonać ataku, nawet nie łamiąc szyfru.
+\begin{itemize}
+    \item Klient przesyła do banku formularz $M$ zaszyfrowany kluczem $K_1$ jako $S_1 = M \oplus K_1$.
+    \item Ewa, znając strukturę formularza $M$ (np. dzięki pamięci fotograficznej), oblicza klucz: $K_1 = S_1 \oplus M$.
+    \item Ewa tworzy fałszywy formularz $M'$, szyfruje go tym samym kluczem $S' = M' \oplus K_1$ i wysyła do banku.
+    \item Bank odszyfrowuje wiadomość i uznaje ją za autentyczną.
+\end{itemize}
+Wniosek: OTP sam w sobie nie gwarantuje integralności ani autentyczności. Niezbędny jest protokół uwierzytelnienia (np. Wegmana-Cartera).
+
+\section{Uwierzytelnienie Wegmana-Cartera}
+
+Jest to metoda symetrycznego podpisu cyfrowego wykorzystująca \textbf{uniwersalne rodziny funkcji haszujących}.
+\begin{enumerate}
+    \item Nadawca i odbiorca współdzielą sekretny klucz, który wskazuje konkretną funkcję $f_i$ z ogromnej rodziny $F$.
+    \item Nadawca oblicza znacznik (\textit{tag}) $T = f_i(M)$ i przesyła $(M, T)$.
+    \item Ewa nie zna wybranej funkcji, więc próba podmiany wiadomości na $M'$ wiąże się z koniecznością zgadnięcia nowego znacznika $T'$.
+    \item Prawdopodobieństwo sukcesu Ewy jest minimalizowane dzięki własnościom kolizji w rodzinach uniwersalnych.
+\end{enumerate}
+
+\section{Podstawy Kwantowej Dystrybucji Klucza (QKD)}
+
+QKD rozwiązuje problem bezpiecznego dostarczenia klucza do OTP. Opiera się na fundamentalnych prawach mechaniki kwantowej:
+
+\subsection{Aksjomaty bezpieczeństwa}
+\begin{itemize}
+    \item \textbf{Twierdzenie o zakazie klonowania (No-cloning theorem):} Nie istnieje operacja unitarna $U$ taka, że $U\ket{\psi}\ket{0} = \ket{\psi}\ket{\psi}$. Ewa nie może skopiować stanu kwantowego bez jego zaburzenia.
+    \item \textbf{Redukcja wektora stanu (Postulat von Neumanna):} Pomiar niszczy superpozycję i rzutuje stan na bazę pomiarową. Każda próba podsłuchu (pomiaru przez Ewę) pozostawia ślad w postaci wzrostu poziomu błędów (BER).
+    \item \textbf{Zasada nieoznaczoności Heisenberga:} Nie można jednocześnie poznać wartości operatorów, które ze sobą nie komutują (np. polaryzacja w bazie prostej i skośnej).
+\end{itemize}
+
+\subsection{Protokół BB84 (Bennett-Brassard 1984)}
+Wykorzystuje dwa zestawy baz dla kubitów (np. polaryzacja fotonów):
+\begin{itemize}
+    \item \textbf{Baza prosta ($+$):} Stany $\ket{0}$ (H) i $\ket{1}$ (V).
+    \item \textbf{Baza skośna ($\times$):} Stany $\ket{+} = \frac{1}{\sqrt{2}}(\ket{0} + \ket{1})$ oraz $\ket{-} = \frac{1}{\sqrt{2}}(\ket{0} - \ket{1})$.
+\end{itemize}
+
+\textbf{Mechanizm detekcji:}
+Jeśli baza odbiorcy zgadza się z bazą nadawcy, wynik jest deterministyczny. Jeśli bazy są różne, wynik pomiaru jest całkowicie losowy:
+$$\bra{+} \ket{0}^2 = \left| \frac{1}{\sqrt{2}} (\bra{0} + \bra{1}) \ket{0} \right|^2 = \frac{1}{2}$$
+
+\subsection{Implementacja fizyczna}
+Układ zawiera:
+\begin{itemize}
+    \item Źródło pojedynczych fotonów.
+    \item Generatory liczb losowych wybierające bazy i stany.
+    \item Układy interferometryczne lub dzielniki polaryzacyjne (PBS).
+    \item Detektory pojedynczych fotonów (SPD).
+\end{itemize}
+
+W przypadku błędnego wyboru bazy, układ zachowuje się niedeterministycznie, co jest kluczem do wykrywania podsłuchu.
+
+\section{Podsumowanie}
+Kryptografia kwantowa zapewnia bezwarunkowe bezpieczeństwo (unconditional security) poprzez połączenie OTP z kwantowym przesyłaniem klucza. O ile implementacje techniczne (np. niedoskonałości detektorów) mogą być celem ataków typu \textit{side-channel}, o tyle same zasady fizyki gwarantują wykrywalność każdej ingerencji w kanał kwantowy.
+
+\end{document})
